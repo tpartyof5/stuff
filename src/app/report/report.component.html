@@ -1,0 +1,16 @@
+<div  style="float:left;width:10%">
+  <div id="overlay" style="display: none;"></div>
+  <h1>Reports</h1>
+  <ul>
+    <li *ngFor="let report of reports.value"   ><a href="javascript:void(0);" (click)="showReport(report);"> {{report.name}}</a></li>
+  </ul>
+</div> 
+<div style="width:90%">
+
+
+  <object *ngIf="objectUrl" [data]="objectUrl | safe:'resourceUrl'" type="{{ContentType}}" width="90%" height="600px">
+
+  </object>
+
+
+</div>
