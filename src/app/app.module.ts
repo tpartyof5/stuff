@@ -6,7 +6,8 @@ import { AppComponent } from './app.component';
 import { ReportComponent } from './report/report.component';
 import {  HttpClientModule } from '@angular/common/http';
 import { SafePipe } from './safe.pipe';
-
+import { TelerikReportingModule } from '@progress/telerik-angular-report-viewer';
+import {   ReactiveFormsModule, FormsModule} from '@angular/forms';
 
 
 
@@ -20,7 +21,7 @@ import { SafePipe } from './safe.pipe';
   imports: [
     BrowserModule,
     AppRoutingModule,  
-    HttpClientModule
+    HttpClientModule, TelerikReportingModule,FormsModule,ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

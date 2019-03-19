@@ -1,41 +1,40 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { resolve } from 'dns';
 
 @Injectable({
 providedIn:'root'
 })
 export class ReportService {
-api_root =  "http://localhost:5488";
-api_list = "/odata/templates";
-api_report="/api/report"
+api_root =  "http://localhost:83";
+api_list = "/api/reportserver/v2/reports";
+api_report="/api/reportserver/v2/reports/{id}"
+api_login="/Token"
 
   constructor(private http: HttpClient) { }
+  getReports(accessToken:string){
+    //const accessToken = this.getReportToken();
+    const headerDict = {
+      'Authorization': 'Bearer ' + accessToken
+    }
 
-  getReports(){
-    return this.http.get(this.api_root + this.api_list);
+    const requestOptions = {                                                                                                                                                                                 
+      headers: new HttpHeaders(headerDict)
+    };
+
+    return this.http.get(this.api_root + this.api_list,requestOptions);
   }
 
-  getReport(report:any):Observable<Blob>{
-
+  login(username:string,password:string){
+    var loginData= "grant_type=password&username=" + username +"&password=" + password;
     const headerDict = {
-      'Content-Type': 'application/json'
-    }
-    
+      'Content-Type': 'x-www-form-urlencoded'
+    }   
     const requestOptions = {                                                                                                                                                                                 
       headers: new HttpHeaders(headerDict),
-      responseType:'arraybuffer' as 'json'
-    };
-   
-   const reportObject = {
-      template:{
-          shortid:report.shortid
-      }
-    }
-    
-    const data = JSON.stringify(reportObject);
-    return this.http.post<Blob>(this.api_root + this.api_report,data, requestOptions)
-
+    };    
+   return  this.http.post(this.api_root + this.api_login,loginData, requestOptions);
   }
 
 

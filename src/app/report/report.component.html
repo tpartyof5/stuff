@@ -1,16 +1,48 @@
-<div  style="float:left;width:10%">
-  <div id="overlay" style="display: none;"></div>
-  <h1>Reports</h1>
-  <ul>
-    <li *ngFor="let report of reports.value"   ><a href="javascript:void(0);" (click)="showReport(report);"> {{report.name}}</a></li>
-  </ul>
-</div> 
-<div style="width:90%">
+<div class="container-fluid">
+  <form *ngIf="reportServerTokenKey==''" [formGroup]="loginForm"  (ngSubmit)="onLoginSubmit()" #frmLogin="ngForm">
+      <div class="alert alert-danger" role="alert" *ngIf="loginErrorMessage" >
+          <strong>Oh No!</strong> {{loginErrorMessage}}
+        </div>
+    <div class="form-group">
+        <label for="userName">User Name</label>
+        <input type="text" class="form-control" id="username" name="username"
+        placeholder="Please enter your user name" formControlName="username" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" 
+        placeholder="Please enter your user password" formControlName="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary"  [disabled]="!loginForm.valid" >Submit</button>
 
+  </form>
 
-  <object *ngIf="objectUrl" [data]="objectUrl | safe:'resourceUrl'" type="{{ContentType}}" width="90%" height="600px">
+  <div class="btn-group btn-group-sm">
+    <button *ngFor="let report of reports" type="button" class="btn btn-secondary" (click)="showReport(report);">{{report.Name}}</button>
+  </div>
 
-  </object>
+      <div *ngIf="reportServerTokenKey!==''" >
+      <tr-viewer #viewer1 
+          [containerStyle]="viewerContainerStyle"
+          [serviceUrl]="'http://localhost:83/api/reportserver/v2/reports'"
 
+          [reportServer]= "{
+              url:'http://localhost:83/'
 
+          }"
+          [parameters]="{
+            editors:{
+              singleSelect:'COMBO_BOX',
+              multiSelect:'COMBO_BOX'
+            }
+          }"
+        [pageMode] = "'SINGLE_PAGE'"
+          [viewMode]="'INTERACTIVE'"
+          [scaleMode]="'SPECIFIC'"
+          [scale]="1.0"
+          
+          
+          >
+      </tr-viewer>
+      </div>
 </div>

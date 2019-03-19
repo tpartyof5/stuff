@@ -1,11 +1,8 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import {ReportService} from './report.service';
 import { DomSanitizer} from '@angular/platform-browser';
-import { TmplAstBoundAttribute } from '@angular/compiler';
-
-
-
-
+import { TelerikReportViewerComponent } from '@progress/telerik-angular-report-viewer';
+import { FormControl, FormGroup ,Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-report',
@@ -13,67 +10,78 @@ import { TmplAstBoundAttribute } from '@angular/compiler';
   styleUrls: ['./report.component.css'],
   providers:[ReportService]
 })
+
 export class ReportComponent implements OnInit {
-
+  @ViewChild('viewer1') viewer: TelerikReportViewerComponent;
   reports:any;
-  reportToView:any ;
-  objectUrl :string; 
-  contentType:string;
-
-
+  reportServerTokenKey:string="";
+  loginErrorMessage:string;
+  loginForm = new FormGroup( {
+    username : new FormControl('',Validators.required),
+    password :new FormControl('',Validators.required)
+    }
+  )
   constructor(private rptsrvc:ReportService, private sanitizer:DomSanitizer) { 
 
     
   }
 
   ngOnInit() {
-    this.getReports();
+
+    this.reportsInIt();
+    console.log(this.loginForm.valid)
   }
 
-  getReports():void {
+  reportsInIt(){
+      if (this.reportServerTokenKey !==""){
+        this.getReports();
+      };
+  }
 
-    this.rptsrvc.getReports().subscribe(
-        data=>{this.reports=data
-    
-        },
-        error=>console.log(error),()=>console.log('done loading reports')
+  getReports(): void {
 
-
+    this.rptsrvc.getReports(this.reportServerTokenKey).subscribe(
+      data => {
+        this.reports = data
+      },
+      error => console.log(error), () => console.log('done loading reports')
     );
   }
 
 
-  showReport(report:any){
+  showReport(selectedReport:any){
     console.log('This report has been clicked');
-     this.contentType=this.getContentType(report.recipe);
-     this.rptsrvc.getReport(report).subscribe(
-      data=>{
-        var file = new Blob([data], {type: this.contentType});
-        var fileURL = URL.createObjectURL(file);
-        this.objectUrl = fileURL;
-       //window.open(this.objectUrl);
+    const rs:any = {
+      report:'ID/' + selectedReport.Id+ '/',
+      ParameterValues:{},
+      authenticationToken:this.reportServerTokenKey
     
-        },
-        error=>console.log(error),
-        ()=>console.log('done getting report' + report.name)
+    };
+    this.viewer.setAuthenticationToken(this.reportServerTokenKey);
+    this.viewer.setReportSource(rs);
+   }
+
+  onLoginSubmit(){
+    
+      this.rptsrvc.login(this.loginForm.controls.username.value,this.loginForm.controls.password.value).subscribe(
+        (data: any) => {
+      this.loginErrorMessage="";
+      this.reportServerTokenKey = data.access_token;
+      this.getReports();
+    },
+     (error) => 
+      {
+         
+         this.loginErrorMessage = error.error.error_description;
+         return console.log(error);
+       },
+
+      () => console.log('done login to reports')
 
     )
-
+    
   }
 
-  getContentType(recipe:string):string {
-    switch (recipe) {
-      case 'chrome-pdf': return "application/pdf";
-      case 'chrome-image': return  "application/pdf";
-      case 'html-with-browser-client':  return "application/pdf";
-      case 'text': return  "text/plain";
-      case 'html-to-xlsx': return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-      case 'xlsx': return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-      case 'html': return "text/plain";
-      
-    }
-
-  }
 
 
 }
