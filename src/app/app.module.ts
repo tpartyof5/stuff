@@ -4,11 +4,14 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ReportComponent } from './report/report.component';
-import {  HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { SafePipe } from './safe.pipe';
 import { TelerikReportingModule } from '@progress/telerik-angular-report-viewer';
-import {   ReactiveFormsModule, FormsModule} from '@angular/forms';
-
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { UploadComponent } from './upload/upload.component';
+import {  MatFileUploadModule } from 'angular-material-fileupload';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MailmergeComponent } from './mailmerge/mailmerge.component';
 
 
 
@@ -16,12 +19,14 @@ import {   ReactiveFormsModule, FormsModule} from '@angular/forms';
   declarations: [
     AppComponent,
     ReportComponent,
-    SafePipe
+    SafePipe,
+    UploadComponent,
+    MailmergeComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,  
-    HttpClientModule, TelerikReportingModule,FormsModule,ReactiveFormsModule
+    AppRoutingModule,
+    HttpClientModule, TelerikReportingModule, FormsModule, ReactiveFormsModule, MatFileUploadModule, BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -16,11 +16,13 @@ export class ReportComponent implements OnInit {
   reports:any;
   reportServerTokenKey:string="";
   loginErrorMessage:string;
+
   loginForm = new FormGroup( {
     username : new FormControl('',Validators.required),
     password :new FormControl('',Validators.required)
     }
   )
+  
   constructor(private rptsrvc:ReportService, private sanitizer:DomSanitizer) { 
 
     

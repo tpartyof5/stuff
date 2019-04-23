@@ -1,0 +1,10 @@
+<input id="singleFile" multiple="true" type="file" [fileUploadInputFor]= "fileUploadQueue"/>
+
+<div style="width: 500px">
+  <mat-file-upload-queue #fileUploadQueue
+      [fileAlias]="'file'"
+      [httpUrl]="''" multiple>
+  
+      <mat-file-upload [file]="file" [id]="i" *ngFor="let file of fileUploadQueue.files; let i = index"></mat-file-upload>
+  </mat-file-upload-queue>
+</div>
