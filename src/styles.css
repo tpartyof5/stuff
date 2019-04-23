@@ -99,6 +99,8 @@ body {
   border-color: transparent;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
+/* Created so that multi select filters in the telerik viewer do not extend
+the height of the page.  Does not look nice. */
 div.k-multiselect {
   display: block;
   width: auto;
